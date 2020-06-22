@@ -67,6 +67,8 @@ namespace FLFlight {
 
         private void Update () {
 
+             Debug.Log ("la vida "+life);
+
             if (life <= 0) {
                 
             } else {
