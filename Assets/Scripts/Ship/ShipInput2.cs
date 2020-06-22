@@ -11,9 +11,9 @@ namespace FLFlight {
         [SerializeField] private float pitchSensitivity = 2.5f;
         [SerializeField] private float yawSensitivity = 2.5f;
         [SerializeField] private float rollSensitivity = 1f;
-        [SerializeField] private int damage = 25;
-        [SerializeField] private int life = 80;
-        [SerializeField] private int time = 0;
+        public int damage = 25;
+        public int life = 80;
+        public int time = 0;
 
         [Range (-1, 1)]
         [SerializeField] private float pitch;
@@ -57,9 +57,6 @@ namespace FLFlight {
         public float Roll { get { return roll; } }
         public float Strafe { get { return strafe; } }
         public float Throttle { get { return throttle; } }
-        public int Life { get { return life; } set { life = life + value; } }
-        public int Damage { get { return damage; } set { damage = damage + value; } }
-        public int TimeBuff { get { return time; } set { time = time + value; } }
 
         void Start () {
             sound = GetComponent<AudioSource> ();
@@ -80,7 +77,6 @@ namespace FLFlight {
                 if (time > 0) {
                     time = time - 1;
                 } else {
-                    life = 60;
                     damage = 25;
                 }
 

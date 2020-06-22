@@ -40,12 +40,12 @@ namespace FLFlight {
                 }
             }
 
-            if (player1.Input.Life <= 0) {
+            if (player1.Input.life <= 0) {
                 lbl_gameover.text = "¡JUGADOR 2 GANA!";
                 lbl_gameover2.text = "¡JUGADOR 2 GANA!";
                 gameOver ();
 
-            } else if (player2.Input.Life <= 0) {
+            } else if (player2.Input.life <= 0) {
                 lbl_gameover.text = "¡JUGADOR 1 GANA!";
                 lbl_gameover2.text = "¡JUGADOR 1 GANA!";
                 gameOver ();
@@ -53,8 +53,8 @@ namespace FLFlight {
         }
 
         void setSilderValue () {
-            j1_slider.value = player1.Input.Life;
-            j2_slider.value = player2.Input.Life;
+            j1_slider.value = player1.Input.life;
+            j2_slider.value = player2.Input.life;
         }
 
         public void pause () {

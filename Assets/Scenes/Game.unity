@@ -585,6 +585,51 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 194713801942356587, guid: d287af162a5514549bd7cb306aa60fbe,
+        type: 3}
+      propertyPath: m_TagString
+      value: Player
+      objectReference: {fileID: 0}
+    - target: {fileID: 194713801942356587, guid: d287af162a5514549bd7cb306aa60fbe,
+        type: 3}
+      propertyPath: m_Name
+      value: Ship2
+      objectReference: {fileID: 0}
+    - target: {fileID: 256137445583645489, guid: d287af162a5514549bd7cb306aa60fbe,
+        type: 3}
+      propertyPath: m_Materials.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 256320236054832335, guid: d287af162a5514549bd7cb306aa60fbe,
+        type: 3}
+      propertyPath: m_Materials.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 256360547207934493, guid: d287af162a5514549bd7cb306aa60fbe,
+        type: 3}
+      propertyPath: m_Materials.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 256379060788876471, guid: d287af162a5514549bd7cb306aa60fbe,
+        type: 3}
+      propertyPath: m_Materials.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 256484468178138979, guid: d287af162a5514549bd7cb306aa60fbe,
+        type: 3}
+      propertyPath: m_Materials.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 256527834385263297, guid: d287af162a5514549bd7cb306aa60fbe,
+        type: 3}
+      propertyPath: m_Materials.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 256538165986659271, guid: d287af162a5514549bd7cb306aa60fbe,
+        type: 3}
+      propertyPath: m_Materials.Array.size
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 275525393928187567, guid: d287af162a5514549bd7cb306aa60fbe,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -656,6 +701,11 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 3813004959811009849, guid: 7d2a904b07fac6f4abb58899cf7602ef,
         type: 3}
+    - target: {fileID: 5760539357284875513, guid: d287af162a5514549bd7cb306aa60fbe,
+        type: 3}
+      propertyPath: m_Materials.Array.size
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d287af162a5514549bd7cb306aa60fbe, type: 3}
 --- !u!1 &558325337
@@ -2652,6 +2702,36 @@ PrefabInstance:
       propertyPath: rollSensitivity
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 372722547736522847, guid: ad6b910afc88d0844938c861be142055,
+        type: 3}
+      propertyPath: m_Materials.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 373385611130040751, guid: ad6b910afc88d0844938c861be142055,
+        type: 3}
+      propertyPath: m_Materials.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 373445356326375593, guid: ad6b910afc88d0844938c861be142055,
+        type: 3}
+      propertyPath: m_Materials.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 373484081918569485, guid: ad6b910afc88d0844938c861be142055,
+        type: 3}
+      propertyPath: m_Materials.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 373534919951755635, guid: ad6b910afc88d0844938c861be142055,
+        type: 3}
+      propertyPath: m_Materials.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 373648605923753889, guid: ad6b910afc88d0844938c861be142055,
+        type: 3}
+      propertyPath: m_Materials.Array.size
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 392669043693008321, guid: ad6b910afc88d0844938c861be142055,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -2711,6 +2791,21 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Ship1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5359274796827065204, guid: ad6b910afc88d0844938c861be142055,
+        type: 3}
+      propertyPath: m_TagString
+      value: Player
+      objectReference: {fileID: 0}
+    - target: {fileID: 5359274796827065204, guid: ad6b910afc88d0844938c861be142055,
+        type: 3}
+      propertyPath: m_Name
+      value: Ship1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8553049528576780213, guid: ad6b910afc88d0844938c861be142055,
+        type: 3}
+      propertyPath: m_Materials.Array.size
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ad6b910afc88d0844938c861be142055, type: 3}
