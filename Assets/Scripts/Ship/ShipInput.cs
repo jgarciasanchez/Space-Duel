@@ -35,7 +35,7 @@ namespace FLFlight {
         static AudioSource sound;
         static AudioSource soundEngine;
         public int damage = 25;
-        public int life = 80;
+        public int life = 100;
         public int time = 0;
         public string xAxis;
         public string yAxis;

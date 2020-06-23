@@ -11,7 +11,7 @@ namespace FLFlight {
         [SerializeField] private float pitchSensitivity = 2.5f;
         [SerializeField] private float yawSensitivity = 2.5f;
         [SerializeField] private float rollSensitivity = 1f;
-        public int damage = 25;
+        public int damage = 10;
         public int life = 80;
         public int time = 0;
 
@@ -66,7 +66,7 @@ namespace FLFlight {
         private void Update () {
 
             if (life <= 0) {
-
+                
             } else {
                 string[] names = Input.GetJoystickNames ();
                 soundEngine.volume = Throttle;
@@ -82,6 +82,8 @@ namespace FLFlight {
 
                 if (names.Length > 1) {
                     Controller = true;
+                }else if(names.Length < 1){
+                        //pausa
                 } else {
                     Controller = false;
                 }

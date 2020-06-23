@@ -84,11 +84,11 @@ namespace FLFlight {
         }
 
         public void gameOver () {
-            //StartCoroutine("endGame");
+            StartCoroutine("endGame");
         }
 
         IEnumerator endGame () {
-            yield return new WaitForSeconds (4);
+            yield return new WaitForSeconds (0.5f);
             pause ();
         }
     }
