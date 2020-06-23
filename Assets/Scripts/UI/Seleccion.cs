@@ -4,8 +4,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public class Seleccion : MonoBehaviour
-{
+public class Seleccion : MonoBehaviour {
     //barras de estadistica
     public Slider Damage_slider;
     public Slider Vida_slider;
@@ -17,6 +16,7 @@ public class Seleccion : MonoBehaviour
     public Toggle tj2;
     Vector3 targetRot;
     Vector3 currentAngle;
+    static AudioSource soundEngine;
 
     int currentSelection;
     int totalCharacters;
@@ -25,81 +25,79 @@ public class Seleccion : MonoBehaviour
     string jugador;
 
     // Start is called before the first frame update
-    void Start()
-    {
-        Damage_slider.maxValue=120f;
+    void Start () {
+        Damage_slider.maxValue = 120f;
         nave = "nave1";
         jugador = "j1";
-        setSilderValue();
-        totalCharacters=2;
-        currentSelection=2;
+        setSilderValue ();
+        totalCharacters = 2;
+        currentSelection = 2;
+        soundEngine = GetComponent<AudioSource> ();
     }
 
     // Update is called once per frame
-    void Update()
-    {
-        setSilderValue();
-        if(Input.GetKeyDown(KeyCode.RightArrow) || Input.GetAxis("6TH")==1){
-            currentAngle=transform.eulerAngles;
-            targetRot = targetRot+new Vector3(0,180,0);
+    void Update () {
+        setSilderValue ();
+        if (Input.GetKeyDown (KeyCode.RightArrow) || Input.GetAxis ("6TH") == 1) {
+            currentAngle = transform.eulerAngles;
+            targetRot = targetRot + new Vector3 (0, 180, 0);
             currentSelection++;
-            naveCheck();
+            soundEngine.Play();
+            naveCheck ();
         }
-        if(Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetAxis("6TH")==-1 ){
-            currentAngle=transform.eulerAngles;
-            targetRot = targetRot+new Vector3(0,180,0);
+        if (Input.GetKeyDown (KeyCode.LeftArrow) || Input.GetAxis ("6TH") == -1) {
+            currentAngle = transform.eulerAngles;
+            targetRot = targetRot + new Vector3 (0, 180, 0);
             currentSelection--;
-            naveCheck();
+            soundEngine.Play();
+            naveCheck ();
         }
-        if(Input.GetKeyDown(KeyCode.UpArrow) ){
-             Debug.Log("Selecciono");
+        if (Input.GetKeyDown (KeyCode.UpArrow)) {
+            Debug.Log ("Selecciono");
         }
-        
-        currentAngle=new Vector3(0,Mathf.LerpAngle(currentAngle.y,targetRot.y,0.05f));
-        transform.eulerAngles=currentAngle;
+
+        currentAngle = new Vector3 (0, Mathf.LerpAngle (currentAngle.y, targetRot.y, 0.05f));
+        transform.eulerAngles = currentAngle;
     }
 
-    public void naveCheck(){
-        if( nave == "nave1"){
+    public void naveCheck () {
+        if (nave == "nave1") {
             nave = "nave2";
-            Debug.Log("ahora nave2");
-        }else{
+            Debug.Log ("ahora nave2");
+        } else {
             nave = "nave1";
-            Debug.Log("actual nave1");
+            Debug.Log ("actual nave1");
         }
     }
 
-    void setSilderValue()
-    {
-        if( nave == "nave1"){
+    void setSilderValue () {
+        if (nave == "nave1") {
             Damage_slider.value = 85;
             Vida_slider.value = 100;
             Velocidad_slider.value = 50;
-        }else{
+        } else {
             Damage_slider.value = 65;
             Vida_slider.value = 60;
             Velocidad_slider.value = 100;
         }
-        
+
     }
 
-    public void Selecciona()
-    {
-        if(jugador== "j1"){
-            jugador= "j2";
-            tj1.isOn=true;
+    public void Selecciona () {
+        if (jugador == "j1") {
+            jugador = "j2";
+            tj1.isOn = true;
             txvJugadorA.text = "Jugador eligiendo : jugador2";
-        }else{
-            tj2.isOn=true;
+        } else {
+            tj2.isOn = true;
             txvJugadorA.text = "Listo!";
         }
     }
 
-    public void loadGame()
-    {
-        if(tj2.isOn && tj1.isOn){
-            SceneManager.LoadScene("Game");
-        }else{
+    public void loadGame () {
+        if (tj2.isOn && tj1.isOn) {
+            SceneManager.LoadScene ("Game");
+        } else {
             alerta.text = "Faltan jugadores por elegir naves";
         }
     }
