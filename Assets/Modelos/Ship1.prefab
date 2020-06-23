@@ -413,7 +413,7 @@ MonoBehaviour:
   bulletPrefab: {fileID: 3813004959811009849, guid: b648adb42ae805e4aaf9cf556b227c45,
     type: 3}
   damage: 25
-  life: 80
+  life: 100
   time: 0
   xAxis: P1X
   yAxis: P1Y
@@ -436,7 +436,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   linearForce: {x: 100, y: 100, z: 250}
-  angularForce: {x: 100, y: 100, z: 100}
+  angularForce: {x: 250, y: 250, z: 300}
   reverseMultiplier: 1
   forceMultiplier: 100
 --- !u!82 &5879688795653605248

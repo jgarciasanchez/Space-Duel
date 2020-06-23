@@ -254,7 +254,9 @@ MonoBehaviour:
     m_LineSpacing: 1
   m_Text: 'THR 100%
 
-    SPD 100'
+    SPD 100
+
+    PWR 25'
 --- !u!114 &7079203220749519762
 MonoBehaviour:
   m_ObjectHideFlags: 0

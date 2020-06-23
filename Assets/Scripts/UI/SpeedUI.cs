@@ -17,13 +17,15 @@ namespace FLFlight.UI {
         // Update is called once per frame
         void Update () {
             if (text != null && player != null) {
-                text.text = string.Format ("THR: {0}\nSPD: {1}",
+                text.text = string.Format ("THR: {0}\nSPD: {1}\nPWR: {2}",
                     (player.Input.Throttle * 100.0f).ToString ("000"),
-                    player.Velocity.magnitude.ToString ("000"));
+                    player.Velocity.magnitude.ToString ("000"),
+                    player.Input.damage);
             } else if (text != null && player2 != null) {
-                text.text = string.Format ("THR: {0}\nSPD: {1}",
+                text.text = string.Format ("THR: {0}\nSPD: {1}\nPWR: {2}",
                     (player2.Input.Throttle * 100.0f).ToString ("000"),
-                    player2.Velocity.magnitude.ToString ("000"));
+                    player2.Velocity.magnitude.ToString ("000"),
+                    player2.Input.damage);
             }
         }
     }

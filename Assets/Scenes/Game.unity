@@ -693,7 +693,7 @@ PrefabInstance:
     - target: {fileID: 3583186776082741458, guid: d287af162a5514549bd7cb306aa60fbe,
         type: 3}
       propertyPath: damage
-      value: 0
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 3583186776082741458, guid: d287af162a5514549bd7cb306aa60fbe,
         type: 3}
@@ -2172,7 +2172,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -371, y: 242}
+  m_AnchoredPosition: {x: -371, y: 202.5}
   m_SizeDelta: {x: 386.71973, y: 44.94989}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1083425765
@@ -2304,7 +2304,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -374, y: 243.5}
+  m_AnchoredPosition: {x: -374, y: 204}
   m_SizeDelta: {x: 386.71973, y: 44.94989}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1231019333
@@ -2706,6 +2706,11 @@ PrefabInstance:
         type: 3}
       propertyPath: life
       value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 354394390717796595, guid: ad6b910afc88d0844938c861be142055,
+        type: 3}
+      propertyPath: pitchSensitivity
+      value: 2.5
       objectReference: {fileID: 0}
     - target: {fileID: 372722547736522847, guid: ad6b910afc88d0844938c861be142055,
         type: 3}

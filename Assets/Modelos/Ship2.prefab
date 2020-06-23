@@ -270,7 +270,7 @@ MonoBehaviour:
   pitchSensitivity: 2.5
   yawSensitivity: 2.5
   rollSensitivity: 1
-  damage: 25
+  damage: 10
   life: 80
   time: 0
   pitch: 0
@@ -278,7 +278,7 @@ MonoBehaviour:
   roll: 0
   strafe: 0
   throttle: 0
-  bulletPrefab: {fileID: 3813004959811009849, guid: b648adb42ae805e4aaf9cf556b227c45,
+  bulletPrefab: {fileID: 3813004959811009849, guid: 7d2a904b07fac6f4abb58899cf7602ef,
     type: 3}
   xAxis: P2X
   yAxis: P2Y
@@ -302,7 +302,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   linearForce: {x: 100, y: 100, z: 500}
-  angularForce: {x: 100, y: 100, z: 100}
+  angularForce: {x: 300, y: 300, z: 100}
   reverseMultiplier: 1
   forceMultiplier: 100
 --- !u!82 &-6530135871592640296

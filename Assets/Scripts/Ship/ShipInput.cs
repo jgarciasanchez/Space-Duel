@@ -3,9 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 
 namespace FLFlight {
-    /// <summary>
-    /// Class specifically to deal with input.
-    /// </summary>
     public class ShipInput : MonoBehaviour {
         [SerializeField] private float bankLimit = 35f;
         [SerializeField] private float pitchSensitivity = 2.5f;
@@ -32,6 +29,7 @@ namespace FLFlight {
         private Ship ship;
 
         public Rigidbody bulletPrefab;
+        private bool Controller = false;
         static AudioSource sound;
         static AudioSource soundEngine;
         public int damage = 25;
@@ -48,7 +46,6 @@ namespace FLFlight {
 
         public bool randomRotation = true;
 
-        // How quickly the throttle reacts to input.
         private const float THROTTLE_SPEED = 0.5f;
 
         public float Pitch { get { return pitch; } }
@@ -63,22 +60,35 @@ namespace FLFlight {
         }
 
         private void Update () {
-
-            Debug.Log ("la vida " + life);
+            string[] names = Input.GetJoystickNames ();
+            Debug.Log(damage + "nave1");
 
             if (life <= 0) {
 
             } else {
                 soundEngine.volume = Throttle;
-                SetStickCommandsUsingAutopilot ();
-                UpdateThrottle ();
-                Debug.Log (time);
+                if (Controller) {
+                    SetStickCommandsUsingAutopilot ();
+                    UpdateThrottle ();
+                    if (Input.GetButtonDown ("A")) {
+                        Rigidbody t = Instantiate (bulletPrefab);
+                        t.position = transform.position + transform.forward * 10;
+                        t.velocity = transform.forward * 300;
+                        sound.PlayOneShot (audios[0]);
+                    }
+                }
+
+                if (names[0].Length > 1) {
+                    Controller = true;
+                } else if (names[0].Length < 1) {
+                    Controller = false;
+                }
 
                 if (time > 0) {
                     time = time - 1;
                     Debug.Log (time);
                 } else {
-                    damage = 15;
+                    damage = 25;
                 }
 
                 if (yaw > 0.2 || yaw < -0.2) {
@@ -93,14 +103,6 @@ namespace FLFlight {
                     pitch = 0;
                 }
 
-                if (Input.GetButtonDown ("A")) {
-                    Rigidbody t = Instantiate (bulletPrefab);
-                    t.position = transform.position + transform.forward * 10;
-                    t.velocity = transform.forward * 300;
-                    sound.PlayOneShot (audios[0]);
-
-                    Debug.LogWarning ("se creo bullet");
-                }
             }
         }
 
