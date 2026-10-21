@@ -437,7 +437,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   linearForce: {x: 100, y: 100, z: 250}
   angularForce: {x: 250, y: 250, z: 300}
-  reverseMultiplier: 1
+  reverseMultiplier: 0.4
   forceMultiplier: 100
 --- !u!82 &5879688795653605248
 AudioSource:

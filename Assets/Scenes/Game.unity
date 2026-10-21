@@ -3715,19 +3715,50 @@ MonoBehaviour:
   m_GameObject: {fileID: 2005213631}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c3bf8b1389cdbe64f83974a5f14c1fe1, type: 3}
+  m_Script: {fileID: 11500000, guid: 610918e11ac34937b4a769f9eb8bbce2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   prefab: {fileID: 3334695230784230072, guid: 1ff5b228182fc76479f0d3ee7d792c1f, type: 3}
-  spawnShape: 0
-  shapeModifiers: {x: 1, y: 1, z: 1}
-  asteroidCount: 3000
-  range: 1000
-  randomRotation: 1
-  scaleRange: {x: 400, y: 500}
+  arenaHalfSize: 950
+  centerClearRadius: 220
+  shipClearRadius: 160
+  seed: 0
   velocity: 1
   angularVelocity: 1
   scaleMass: 1
+  layers:
+  - name: Cinturon
+    shape: 1
+    count: 900
+    scaleRange: {x: 300, y: 450}
+    radius: 560
+    thickness: 220
+    clusterCount: 0
+    keepCenterClear: 1
+  - name: Cumulos
+    shape: 2
+    count: 700
+    scaleRange: {x: 250, y: 500}
+    radius: 170
+    thickness: 0
+    clusterCount: 7
+    keepCenterClear: 1
+  - name: Dispersos
+    shape: 0
+    count: 350
+    scaleRange: {x: 200, y: 400}
+    radius: 0
+    thickness: 0
+    clusterCount: 0
+    keepCenterClear: 1
+  - name: Cobertura central
+    shape: 3
+    count: 6
+    scaleRange: {x: 900, y: 1200}
+    radius: 160
+    thickness: 0
+    clusterCount: 0
+    keepCenterClear: 0
 --- !u!1 &2023957930
 GameObject:
   m_ObjectHideFlags: 0

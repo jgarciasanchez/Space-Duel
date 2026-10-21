@@ -32,18 +32,23 @@ namespace FLFlight {
         [SerializeField] private float roll;
         [Range (-1, 1)]
         [SerializeField] private float strafe;
-        [Range (0, 1)]
+        [Range (-1, 1)]
         [SerializeField] private float throttle;
+        [Tooltip ("Throttle change per second. Higher = snappier.")]
+        [SerializeField] private float throttleResponse = 1.2f;
 
-        [Header ("Axes (Input Manager)")]
-        public string xAxis;
-        public string yAxis;
-        public string tRAxis;
-        public string tLAxis;
-        public string LAxis;
-        public string fireButton = "A";
+        [Header ("Keyboard")]
         [Tooltip ("Increase / decrease throttle keys (MouseKeyboard scheme).")]
         public List<KeyCode> keys = new List<KeyCode> ();
+        public KeyCode strafeLeftKey = KeyCode.A;
+        public KeyCode strafeRightKey = KeyCode.D;
+        public KeyCode boostKey = KeyCode.LeftShift;
+
+        [Header ("Boost")]
+        [Tooltip ("Boost energy drained per second while boosting (energy goes from 0 to 1).")]
+        public float boostDrain = 0.35f;
+        [Tooltip ("Boost energy recovered per second while not boosting.")]
+        public float boostRecharge = 0.15f;
         [Tooltip ("Camera used to aim with the mouse. Falls back to the second camera in the scene.")]
         [SerializeField] private Camera aimCamera;
 
@@ -58,18 +63,19 @@ namespace FLFlight {
 
         public List<AudioClip> audios = new List<AudioClip> ();
 
-        // How quickly the throttle reacts to input.
-        private const float THROTTLE_SPEED = 0.5f;
-
         private AudioSource audioSource;
         private int baseDamage;
         private float buffTimeRemaining;
         private float nextFireTime;
+        private float boostEnergy = 1f;
+        private bool boosting;
 
         public int PlayerNumber { get { return playerNumber; } }
         public int MaxLife { get; private set; }
         public bool IsDead { get { return life <= 0; } }
         public float BuffTimeRemaining { get { return buffTimeRemaining; } }
+        public float BoostEnergy { get { return boostEnergy; } }
+        public bool Boosting { get { return boosting; } }
 
         public float Pitch { get { return pitch; } }
         public float Yaw { get { return yaw; } }
@@ -97,25 +103,47 @@ namespace FLFlight {
         private void Update () {
             if (IsDead) {
                 pitch = yaw = roll = strafe = throttle = 0f;
+                boosting = false;
                 return;
             }
 
             UpdateBuff ();
 
-            int gamepads = ConnectedGamepads ();
+            LogGamepadsIfChanged ();
+            bool wantBoost = false;
             if (controlScheme == ControlScheme.Gamepad) {
-                if (gamepads >= 1) {
-                    SetStickCommands ();
-                    UpdateThrottle (false);
-                    if (Input.GetButtonDown (fireButton))
+                // Player 1 takes the first connected gamepad, whatever slot Windows gave it.
+                int slot = FindGamepadSlot (1);
+                if (slot > 0) {
+                    SetStickCommands (slot);
+                    UpdateThrottle (slot, false);
+                    strafe = GamepadStrafe (slot);
+                    wantBoost = Input.GetKey (JoystickButton (slot, 1));
+                    if (Input.GetKeyDown (JoystickButton (slot, 0)))
                         Fire ();
                 }
             } else {
-                SetMouseCommands (gamepads >= 2);
-                UpdateThrottle (true);
+                // A second gamepad, if any, also drives the mouse/keyboard player.
+                int slot = FindGamepadSlot (2);
+                bool useGamepad = slot > 0;
+                SetMouseCommands (slot);
+                UpdateThrottle (slot, true);
+
+                strafe = 0f;
+                if (Input.GetKey (strafeLeftKey))
+                    strafe -= 1f;
+                if (Input.GetKey (strafeRightKey))
+                    strafe += 1f;
+                wantBoost = Input.GetKey (boostKey);
+                if (useGamepad) {
+                    strafe = Mathf.Clamp (strafe + GamepadStrafe (slot), -1f, 1f);
+                    wantBoost |= Input.GetKey (JoystickButton (slot, 1));
+                }
+
                 if (Input.GetMouseButtonDown (0))
                     Fire ();
             }
+            UpdateBoost (wantBoost);
 
             if (Mathf.Abs (yaw) <= deadzone)
                 yaw = 0;
@@ -123,7 +151,7 @@ namespace FLFlight {
                 pitch = 0;
 
             if (audioSource != null)
-                audioSource.volume = throttle;
+                audioSource.volume = Mathf.Abs (throttle);
         }
 
         public void TakeDamage (int amount) {
@@ -135,6 +163,33 @@ namespace FLFlight {
             damage += 5;
             life = Mathf.Min (MaxLife, life + 5);
             buffTimeRemaining += buffDuration;
+        }
+
+        private void UpdateBoost (bool wantBoost) {
+            // Boost only helps going forward; it needs some energy left to start.
+            boosting = wantBoost && throttle > 0f && boostEnergy > (boosting ? 0f : 0.15f);
+            if (boosting)
+                boostEnergy = Mathf.Max (0f, boostEnergy - boostDrain * Time.deltaTime);
+            else
+                boostEnergy = Mathf.Min (1f, boostEnergy + boostRecharge * Time.deltaTime);
+        }
+
+        private float GamepadStrafe (int slot) {
+            float value = 0f;
+            if (Input.GetKey (JoystickButton (slot, 4))) // LB
+                value -= 1f;
+            if (Input.GetKey (JoystickButton (slot, 5))) // RB
+                value += 1f;
+            return value;
+        }
+
+        private static string JoystickButton (int slot, int button) {
+            return "joystick " + slot + " button " + button;
+        }
+
+        // Per-slot axes defined in the Input Manager as J1X..J4RT.
+        private static string JoystickAxis (int slot, string axis) {
+            return "J" + slot + axis;
         }
 
         private void UpdateBuff () {
@@ -161,22 +216,39 @@ namespace FLFlight {
                 audioSource.PlayOneShot (audios[0]);
         }
 
-        private static int ConnectedGamepads () {
-            int count = 0;
-            foreach (string name in Input.GetJoystickNames ()) {
-                if (!string.IsNullOrEmpty (name))
-                    count++;
+        private const int MaxGamepadSlots = 4;
+        private static string lastGamepadList;
+
+        /// <summary>
+        /// Returns the 1-based Input Manager slot of the nth connected gamepad, or 0 if
+        /// there aren't that many. Windows often leaves empty entries in the list after a
+        /// reconnect, so the first gamepad isn't always in slot 1.
+        /// </summary>
+        private static int FindGamepadSlot (int nth) {
+            string[] names = Input.GetJoystickNames ();
+            int found = 0;
+            for (int i = 0; i < names.Length && i < MaxGamepadSlots; i++) {
+                if (!string.IsNullOrEmpty (names[i]) && ++found == nth)
+                    return i + 1;
             }
-            return count;
+            return 0;
         }
 
-        private void SetStickCommands () {
-            pitch = Mathf.Clamp (Input.GetAxis (yAxis) * pitchSensitivity, -1f, 1f);
-            yaw = Mathf.Clamp (Input.GetAxis (xAxis) * yawSensitivity, -1f, 1f);
-            roll = -Input.GetAxis (LAxis);
+        private static void LogGamepadsIfChanged () {
+            string list = string.Join (" | ", Input.GetJoystickNames ());
+            if (list == lastGamepadList)
+                return;
+            lastGamepadList = list;
+            Debug.Log ("Mandos detectados (por ranura): [" + list + "] -> J1 usa ranura " + FindGamepadSlot (1) + ", J2 usa ranura " + FindGamepadSlot (2));
         }
 
-        private void SetMouseCommands (bool useGamepad) {
+        private void SetStickCommands (int slot) {
+            pitch = Mathf.Clamp (Input.GetAxis (JoystickAxis (slot, "Y")) * pitchSensitivity, -1f, 1f);
+            yaw = Mathf.Clamp (Input.GetAxis (JoystickAxis (slot, "X")) * yawSensitivity, -1f, 1f);
+            roll = -Input.GetAxis (JoystickAxis (slot, "RX"));
+        }
+
+        private void SetMouseCommands (int gamepadSlot) {
             if (aimCamera == null)
                 return;
 
@@ -188,8 +260,8 @@ namespace FLFlight {
             BankShipRelativeToUpVector (mousePos, aimCamera.transform.up);
 
             // A second gamepad overrides the mouse for this player.
-            if (useGamepad)
-                SetStickCommands ();
+            if (gamepadSlot > 0)
+                SetStickCommands (gamepadSlot);
         }
 
         private void BankShipRelativeToUpVector (Vector3 mousePos, Vector3 upVector) {
@@ -213,20 +285,25 @@ namespace FLFlight {
             yaw = Mathf.Clamp (localGotoPos.x * yawSensitivity, -1f, 1f);
         }
 
-        private void UpdateThrottle (bool useKeys) {
+        private void UpdateThrottle (int gamepadSlot, bool useKeys) {
             float target = throttle;
-            bool increase = Input.GetAxis (tLAxis) == 1 || (useKeys && keys.Count > 0 && Input.GetKey (keys[0]));
-            bool decrease = Input.GetAxis (tRAxis) == 1 || (useKeys && keys.Count > 1 && Input.GetKey (keys[1]));
+            bool increase = useKeys && keys.Count > 0 && Input.GetKey (keys[0]);
+            bool decrease = useKeys && keys.Count > 1 && Input.GetKey (keys[1]);
+            if (gamepadSlot > 0) {
+                increase |= Input.GetAxis (JoystickAxis (gamepadSlot, "RT")) == 1;
+                decrease |= Input.GetAxis (JoystickAxis (gamepadSlot, "LT")) == 1;
+            }
 
             if (increase) {
                 target = 1.0f;
                 if (audioSource != null && !audioSource.isPlaying)
                     audioSource.Play ();
             } else if (decrease) {
-                target = 0.0f;
+                // Brakes first, then reverses (reverse thrust is scaled by ShipPhysics.reverseMultiplier).
+                target = -1.0f;
             }
 
-            throttle = Mathf.MoveTowards (throttle, target, Time.deltaTime * THROTTLE_SPEED);
+            throttle = Mathf.MoveTowards (throttle, target, Time.deltaTime * throttleResponse);
         }
     }
 }
