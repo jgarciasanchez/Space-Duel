@@ -8,7 +8,6 @@ namespace FLFlight.UI {
     public class SpeedUI : MonoBehaviour {
         private Text text;
         public Ship player;
-        public Ship2 player2;
 
         private void Awake () {
             text = GetComponent<Text> ();
@@ -21,11 +20,6 @@ namespace FLFlight.UI {
                     (player.Input.Throttle * 100.0f).ToString ("000"),
                     player.Velocity.magnitude.ToString ("000"),
                     player.Input.damage);
-            } else if (text != null && player2 != null) {
-                text.text = string.Format ("THR: {0}\nSPD: {1}\nPWR: {2}",
-                    (player2.Input.Throttle * 100.0f).ToString ("000"),
-                    player2.Velocity.magnitude.ToString ("000"),
-                    player2.Input.damage);
             }
         }
     }

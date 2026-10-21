@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using FLFlight;
 
 public class Seleccion : MonoBehaviour {
     //barras de estadistica
@@ -26,7 +27,9 @@ public class Seleccion : MonoBehaviour {
 
     // Start is called before the first frame update
     void Start () {
-        Damage_slider.maxValue = 120f;
+        Damage_slider.maxValue = ShipCatalog.MaxDamage;
+        Vida_slider.maxValue = ShipCatalog.MaxLife;
+        Velocidad_slider.maxValue = ShipCatalog.MaxSpeedMultiplier;
         nave = "nave1";
         jugador = "j1";
         setSilderValue ();
@@ -52,9 +55,6 @@ public class Seleccion : MonoBehaviour {
             soundEngine.Play();
             naveCheck ();
         }
-        if (Input.GetKeyDown (KeyCode.UpArrow)) {
-            Debug.Log ("Selecciono");
-        }
 
         currentAngle = new Vector3 (0, Mathf.LerpAngle (currentAngle.y, targetRot.y, 0.05f));
         transform.eulerAngles = currentAngle;
@@ -63,32 +63,30 @@ public class Seleccion : MonoBehaviour {
     public void naveCheck () {
         if (nave == "nave1") {
             nave = "nave2";
-            Debug.Log ("ahora nave2");
         } else {
             nave = "nave1";
-            Debug.Log ("actual nave1");
         }
     }
 
-    void setSilderValue () {
-        if (nave == "nave1") {
-            Damage_slider.value = 85;
-            Vida_slider.value = 100;
-            Velocidad_slider.value = 50;
-        } else {
-            Damage_slider.value = 65;
-            Vida_slider.value = 60;
-            Velocidad_slider.value = 100;
-        }
+    int naveIndex () {
+        return nave == "nave1" ? 0 : 1;
+    }
 
+    void setSilderValue () {
+        ShipStats stats = ShipCatalog.Get (naveIndex ());
+        Damage_slider.value = stats.damage;
+        Vida_slider.value = stats.life;
+        Velocidad_slider.value = stats.speedMultiplier;
     }
 
     public void Selecciona () {
         if (jugador == "j1") {
+            MatchSettings.SelectShip (1, naveIndex ());
             jugador = "j2";
             tj1.isOn = true;
             txvJugadorA.text = "Jugador eligiendo : jugador2";
         } else {
+            MatchSettings.SelectShip (2, naveIndex ());
             tj2.isOn = true;
             txvJugadorA.text = "Listo!";
         }

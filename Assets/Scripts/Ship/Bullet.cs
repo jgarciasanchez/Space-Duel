@@ -1,35 +1,34 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace FLFlight {
     public class Bullet : MonoBehaviour {
+        [Tooltip ("Seconds before a bullet that hit nothing is removed.")]
+        public float lifetime = 5f;
+
+        /// <summary>The ship that fired this bullet. Set when it is fired.</summary>
+        public ShipInput Shooter { get; set; }
+
+        void Start () {
+            Destroy (gameObject, lifetime);
+        }
 
         void OnTriggerEnter (Collider collider) {
-            if (collider.tag != "player") {
-                if (collider.tag == "Miner") {
-                    if (gameObject.name == "Bullet 1(Clone)") {
-                        GameObject.Find ("Ship1").GetComponent<ShipInput> ().damage = GameObject.Find ("Ship1").GetComponent<ShipInput> ().damage + 5;
-                        GameObject.Find ("Ship1").GetComponent<ShipInput> ().life = GameObject.Find ("Ship1").GetComponent<ShipInput> ().life + 5;
-                        GameObject.Find ("Ship1").GetComponent<ShipInput> ().time = GameObject.Find ("Ship1").GetComponent<ShipInput> ().time + 2500;
-                        Destroy (gameObject);
-                        Destroy (collider.gameObject);
-                    } else if (gameObject.name == "Bullet 2(Clone)") {
-                        GameObject.Find ("Ship2").GetComponent<ShipInput2> ().damage = GameObject.Find ("Ship2").GetComponent<ShipInput2> ().damage + 5;
-                        GameObject.Find ("Ship2").GetComponent<ShipInput2> ().life = GameObject.Find ("Ship2").GetComponent<ShipInput2> ().life + 5;
-                        GameObject.Find ("Ship2").GetComponent<ShipInput2> ().time = GameObject.Find ("Ship2").GetComponent<ShipInput2> ().time + 2500;
-                        Destroy (gameObject);
-                        Destroy (collider.gameObject);
-                    }
-                } else if (collider.tag == "wall" || collider.tag == "Asteroid") {
-                    Destroy (gameObject);
-                }
-            }
+            ShipInput hitShip = collider.GetComponentInParent<ShipInput> ();
+            if (hitShip != null) {
+                // Bullets leave the shooter's own collider right after spawning.
+                if (hitShip == Shooter)
+                    return;
 
-            if (collider.tag == "Player" && gameObject.name == "Bullet 1(Clone)" && collider.gameObject.name != "Ship1") {
-                GameObject.Find ("Ship2").GetComponent<ShipInput2> ().life -= GameObject.Find ("Ship1").GetComponent<ShipInput> ().damage;
-            } else if (collider.tag == "Player" && gameObject.name == "Bullet 2(Clone)" && collider.gameObject.name != "Ship2") {
-                GameObject.Find ("Ship1").GetComponent<ShipInput> ().life -= GameObject.Find ("Ship2").GetComponent<ShipInput2> ().damage;
+                if (Shooter != null)
+                    hitShip.TakeDamage (Shooter.damage);
+                Destroy (gameObject);
+            } else if (collider.CompareTag ("Miner")) {
+                if (Shooter != null)
+                    Shooter.ApplyMinerBuff ();
+                Destroy (collider.gameObject);
+                Destroy (gameObject);
+            } else if (collider.CompareTag ("wall") || collider.CompareTag ("Asteroid")) {
+                Destroy (gameObject);
             }
         }
     }

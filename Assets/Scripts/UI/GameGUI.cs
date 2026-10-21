@@ -9,7 +9,6 @@ namespace FLFlight {
 
         public Slider j1_slider;
         public Slider j2_slider;
-        // Start is called before the first frame update
         public List<KeyCode> keys = new List<KeyCode> ();
         public GameObject pauseMenu;
         public GameObject pauseMenu2;
@@ -19,19 +18,28 @@ namespace FLFlight {
         public Text lbl_gameover;
         public Text lbl_gameover2;
         public Ship player1;
-        public Ship2 player2;
+        public Ship player2;
+
+        private bool isGameOver = false;
 
         void Start () {
-            setSilderValue ();
+            // ShipInput.Start may change life based on the selected ship, so wait a frame
+            // before reading MaxLife.
+            StartCoroutine (InitSliders ());
             pause ();
-
         }
 
-        // Update is called once per frame
+        IEnumerator InitSliders () {
+            yield return null;
+            j1_slider.maxValue = player1.Input.MaxLife;
+            j2_slider.maxValue = player2.Input.MaxLife;
+            setSilderValue ();
+        }
+
         void Update () {
             setSilderValue ();
 
-            if (Input.GetKeyDown (keys[0]) || Input.GetKeyDown (keys[1]) || Input.GetKeyDown (keys[2])) //Pausa
+            if (!isGameOver && (Input.GetKeyDown (keys[0]) || Input.GetKeyDown (keys[1]) || Input.GetKeyDown (keys[2]))) //Pausa
             {
                 if (pauseGame) {
                     resume ();
@@ -40,12 +48,15 @@ namespace FLFlight {
                 }
             }
 
-            if (player1.Input.life <= 0) {
+            if (isGameOver)
+                return;
+
+            if (player1.Input.IsDead) {
                 lbl_gameover.text = "¡JUGADOR 2 GANA!";
                 lbl_gameover2.text = "¡JUGADOR 2 GANA!";
                 gameOver ();
 
-            } else if (player2.Input.life <= 0) {
+            } else if (player2.Input.IsDead) {
                 lbl_gameover.text = "¡JUGADOR 1 GANA!";
                 lbl_gameover2.text = "¡JUGADOR 1 GANA!";
                 gameOver ();
@@ -67,24 +78,30 @@ namespace FLFlight {
         }
 
         public void resume () {
+            if (isGameOver)
+                return;
+
             pauseGame = false;
             pauseMenu.SetActive (pauseGame);
             pauseMenu2.SetActive (pauseGame);
             panelEst.SetActive(!pauseGame);
             panelEst2.SetActive(!pauseGame);
-             Time.timeScale = 1f; //se reanuda el juego
+            Time.timeScale = 1f; //se reanuda el juego
         }
 
         public void loadMenu () {
+            Time.timeScale = 1f;
             SceneManager.LoadScene ("Interface");
         }
 
         public void loadGame () {
+            Time.timeScale = 1f;
             SceneManager.LoadScene ("Game");
         }
 
         public void gameOver () {
-            StartCoroutine("endGame");
+            isGameOver = true;
+            StartCoroutine ("endGame");
         }
 
         IEnumerator endGame () {
